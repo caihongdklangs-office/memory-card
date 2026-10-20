@@ -71,6 +71,8 @@ button{font-family:inherit;cursor:pointer}
 .tile.mine .th{position:absolute;inset:0;background-size:cover;background-position:center}
 .tile.mine.has .lbl{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);color:#fff;padding:3px 0;font-size:10px;z-index:1}
 .hint{font-size:12px;color:var(--mute);margin:8px 0 0;line-height:1.5}
+.privacy{margin:14px 0 0;font-size:11px;line-height:1.5;color:#b4b4c4;text-align:center;letter-spacing:-.01em}
+.privacy .pi{width:12px;height:12px;vertical-align:-2px;margin-right:4px}
 
 /* PAGE 2 */
 .stick{position:sticky;top:0;z-index:5;margin:0 -20px;padding:10px 20px 8px;background:rgba(255,255,255,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -108,6 +110,7 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 .done{text-align:center;padding-top:18px}
 .done h2{margin:0;font-size:24px;font-weight:900}
 .done .sub{margin:6px 0 16px;font-size:13px;color:var(--mute)}
+.done .sub .pi{width:13px;height:13px;vertical-align:-2px;margin-right:5px}
 .result{position:relative;display:inline-block;min-height:240px}
 .result img{display:block;width:64vw;max-width:290px;border-radius:18px;box-shadow:0 14px 34px rgba(30,30,80,.3);-webkit-touch-callout:default}
 .result .ld{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:13px;color:var(--mute)}
@@ -173,6 +176,18 @@ body:not(.shared) .only-shared{display:none!important}
 .brand{display:flex;flex-direction:column;align-items:center;gap:6px}
 .brand .logo{height:21px;width:auto;display:block}
 .brand span{font-size:11px;color:#9a9ab0;letter-spacing:.04em}
+
+/* ===== 글상자 편집 ===== */
+.pvtools{gap:8px;flex-wrap:wrap}
+.tbpanel{background:#fff;border:1.5px solid var(--blue);border-radius:16px;padding:14px;margin-top:14px;box-shadow:0 6px 18px rgba(31,75,255,.12)}
+.tbpanel[hidden]{display:none}
+.tbtitle{font-size:14px;font-weight:800;margin-bottom:8px}
+.tbtitle small{font-weight:500;color:var(--mute);font-size:11px;margin-left:4px}
+.tbpanel textarea{height:auto;min-height:74px;line-height:1.5}
+.tbrow{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:12px;font-weight:700;color:#444}
+.tbrow span{flex:0 0 74px}
+.tbhint{margin-top:10px;font-size:11px;color:var(--mute);line-height:1.6}
+.tbhint button{border:0;background:#eef1ff;color:var(--blue);font-weight:700;font-size:11px;border-radius:999px;padding:4px 10px;margin-left:4px}
 
 /* ===== 진행률 ===== */
 .result .ld{flex-direction:column;gap:12px;padding:0 24px;min-width:260px}
@@ -242,6 +257,7 @@ body:not(.shared) .only-shared{display:none!important}
     <label class="tile mine" id="mineTile"><input type="file" accept="image/*" id="file"><span class="th" id="mineTh"></span><span class="ic">📷</span><span class="lbl">내 사진</span></label>
   </div>
   </div></div>
+  <p class="privacy"><svg class="pi" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.4v4.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="8" cy="11.3" r=".95" fill="currentColor"/></svg>사진은 서버로 전송되지 않고 이 기기 안에서만 처리돼요.</p>
   <div class="brand"><img class="logo" alt="대교랭귀지스퀘어 & 차이홍"></div>
   <div class="bar"><div class="in"><button class="cta" id="to2">나의 추억 메시지 쓰기</button></div></div>
 </section>
@@ -252,15 +268,22 @@ body:not(.shared) .only-shared{display:none!important}
   <div class="p2grid">
   <div class="stick">
     <canvas id="cv" width="1080" height="1620"></canvas>
-    <div class="pvtools"><label class="toggle"><input type="checkbox" id="adjust"> ✋ 사진 위치 조정 (드래그)</label></div>
+    <div class="pvtools"><label class="toggle"><input type="checkbox" id="adjust"> ✋ 사진 위치 조정</label><label class="toggle"><input type="checkbox" id="textMode"> ✏️ 글 수정</label></div>
   </div>
 
   <div class="p2ctrl">
+  <div class="tbpanel" id="tbPanel" hidden>
+    <div class="tbtitle">✏️ 글상자 <small>문구를 고치고 Enter로 줄바꿈을 넣어보세요</small></div>
+    <textarea id="tbText" maxlength="120" rows="3" placeholder="나의 추억 문구를 입력하세요"></textarea>
+    <div class="tbrow"><span>글자 크기</span><input type="range" id="tbSize" min="60" max="140" value="100"></div>
+    <div class="tbrow"><span>글상자 크기</span><input type="range" id="tbBox" min="70" max="130" value="100"></div>
+    <div class="tbhint">위 카드를 드래그하면 글상자를 옮길 수 있어요 <button type="button" id="tbReset">위치·크기 초기화</button></div>
+  </div>
   <div class="h2"><span class="stp">STEP 03</span>추억에 맞는 외국어 메시지를 남겨보세요.</div>
   <div class="chips" id="themes"></div>
   <div class="msgs" id="msgs"></div>
   <details class="more"><summary>✍️ 내가 직접 쓰기</summary><div class="in">
-    <textarea id="custom" maxlength="70" placeholder=""></textarea>
+    <textarea id="custom" maxlength="120" placeholder=""></textarea>
     <label class="lbl2" for="customKo">한글 뜻 (선택)</label>
     <input type="text" id="customKo" maxlength="60" placeholder="예) 이 순간을 기억하고 싶어요.">
   </div></details>
@@ -296,7 +319,7 @@ body:not(.shared) .only-shared{display:none!important}
   <div class="done">
     <h2 class="only-own">포토카드 완성! 🎉</h2>
     <h2 class="only-shared">친구가 보낸 포토카드 💌</h2>
-    <p class="sub only-own">이미지를 길게 눌러도 저장할 수 있어요.</p>
+    <p class="sub only-own"><svg class="pi" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.4v4.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="8" cy="11.3" r=".95" fill="currentColor"/></svg>이미지를 길게 눌러도 저장할 수 있어요.</p>
     <p class="sub only-shared">외국어로 남긴 추억을 확인해 보세요.</p>
     <div class="result loading" id="result"><img id="out" alt="완성된 포토카드"><div class="ld"><b id="pgNum">0%</b><div class="pgtrack"><i id="pgBar"></i></div><span id="pgTxt">카드를 만들고 있어요…</span></div></div>
 
@@ -375,7 +398,7 @@ LOGO_READY.then(()=>{try{draw()}catch(e){}});
 function drawLogo(g,img,x,y,h,align){if(!img.complete||!img.naturalWidth)return;const w=h*LOGO_ASPECT;g.drawImage(img,align==='center'?x-w/2:x,y,w,h)}
 
 const S={lang:'en',theme:'travel',msgIdx:0,useCustom:false,customText:'',customKo:'',img:null,imgKey:'',style:'note',color:'pink',
-  zoom:1,panX:0,panY:0,caption:'',showKo:true,adjust:false};
+  zoom:1,panX:0,panY:0,caption:'',showKo:true,adjust:false,textMode:false,tx:0,ty:0,tw:1,tsz:1};
 
 /* ---------- 템플릿 이미지 ---------- */
 function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -458,7 +481,7 @@ function render(){
     g.fillStyle=lin(g,0,0,0,260,[[0,'rgba(0,0,0,.3)'],[1,'rgba(0,0,0,0)']]);g.fillRect(0,0,W,260);g.restore();
     g.fillStyle='#fff';g.font=`700 28px ${SANS}`;spaced(g,'MY MEMORY',72,98,7,'left');plus(g,W-100,100,22);
     g.save();g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=10;drawLogo(g,LOGO_W,72,H-99,41,'left');g.restore();
-    const nw=700,nh=600;g.save();g.translate(650,1150);g.rotate(5*Math.PI/180);
+    const K=S.tw,nw=700*K,nh=600*K;g.save();g.translate(650+S.tx,1150+S.ty);g.rotate(5*Math.PI/180);
     g.shadowColor='rgba(0,0,0,.3)';g.shadowBlur=44;g.shadowOffsetY=18;g.fillStyle=col.bg;rr(g,-nw/2,-nh/2,nw,nh,34);g.fill();
     g.shadowColor='transparent';g.shadowBlur=0;g.shadowOffsetY=0;
     g.fillStyle=col.ink;g.font=`700 22px ${SANS}`;spaced(g,label.toUpperCase(),-nw/2+54,-nh/2+66,4,'left');
@@ -466,7 +489,7 @@ function render(){
     const bx=-nw/2+54,bw=nw-108;g.font=`500 27px ${SANS}`;
     const kl=ko?wrapLines(g,ko,bw-80,false).slice(0,2):[],kh=kl.length*36;
     const by=-nh/2+124,bh=nh-124-(kh?kh+46+24:100);
-    const f=fit(g,m.text,mf,bw,bh,L.start,L.min,L.lh,L.cjk);g.fillStyle=col.ink;g.font=mf(f.size);
+    const f=fit(g,m.text,mf,bw,bh,L.start*S.tsz,L.min,L.lh,L.cjk);g.fillStyle=col.ink;g.font=mf(f.size);
     drawLines(g,f.lines,bx,by+Math.max(0,(bh-f.lines.length*f.size*L.lh)/2),f.size,L.lh,'left');
     if(kl.length){g.fillStyle=col.ink;g.globalAlpha=.85;g.font=`500 27px ${SANS}`;drawLines(g,kl,bx,nh/2-46-kh,27,36/27,'left');g.globalAlpha=1}
     heart(g,nw/2-98,nh/2-96,46,col.ink,2.4);
@@ -481,9 +504,11 @@ function render(){
     const px=-390,py=-600,pw=780,ph=900;g.save();rr(g,px,py,pw,ph,8);g.clip();drawCover(g,S.img,px,py,pw,ph);g.restore();
     g.font=`500 26px ${SANS}`;const kl=ko?wrapLines(g,ko,pw,false).slice(0,2):[],kh=kl.length*34;
     const by=py+ph+34,bh=fh/2-by-34-(kh?kh+12:0);
-    const f=fit(g,m.text,mf,pw-20,bh,L.start*.92,L.min,L.lh,L.cjk);g.fillStyle='#222';g.font=mf(f.size);
+    const f=fit(g,m.text,mf,Math.min(pw-20,(pw-20)*S.tw),bh,L.start*.92*S.tsz,L.min,L.lh,L.cjk);g.fillStyle='#222';g.font=mf(f.size);
+    g.save();g.translate(S.tx,S.ty);
     drawLines(g,f.lines,0,by+Math.max(0,(bh-f.lines.length*f.size*L.lh)/2),f.size,L.lh,'center');
     if(kl.length){g.fillStyle='#888';g.font=`500 26px ${SANS}`;drawLines(g,kl,0,fh/2-34-kh,26,34/26,'center')}
+    g.restore();
     g.globalAlpha=.85;g.fillStyle=col.bg;g.save();g.translate(0,-fh/2+4);g.rotate(2*Math.PI/180);g.fillRect(-110,-30,220,60);g.restore();g.globalAlpha=1;
     g.restore();
     drawLogo(g,LOGO_G,W/2,H-93,41,'center');
@@ -493,12 +518,14 @@ function render(){
     g.fillStyle=lin(g,0,0,0,300,[[0,'rgba(0,0,0,.3)'],[1,'rgba(0,0,0,0)']]);g.fillRect(0,0,W,300);
     g.fillStyle=lin(g,0,860,0,H,[[0,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,.78)']]);g.fillRect(0,860,W,H-860);g.restore();
     g.fillStyle='#fff';g.font=`700 28px ${SANS}`;spaced(g,label.toUpperCase(),72,98,7,'left');heart(g,W-120,64,48,'#ff8fc0',3);
+    g.save();g.translate(S.tx,S.ty);
     g.fillStyle='#ff8fc0';rr(g,80,1000,120,8,4);g.fill();
     g.font=`500 32px ${SANS}`;const kl=ko?wrapLines(g,ko,W-160,false).slice(0,2):[],kh=kl.length*42;
     const by=1030,bh=1500-by-(kh?kh+24:0);
-    const f=fit(g,m.text,mf,W-160,bh,L.start*1.05,L.min,L.lh,L.cjk);g.fillStyle='#fff';g.font=mf(f.size);
+    const f=fit(g,m.text,mf,Math.min(W-120,(W-160)*S.tw),bh,L.start*1.05*S.tsz,L.min,L.lh,L.cjk);g.fillStyle='#fff';g.font=mf(f.size);
     g.save();g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=14;drawLines(g,f.lines,80,by,f.size,L.lh,'left');g.restore();
     if(kl.length){g.fillStyle='rgba(255,255,255,.88)';g.font=`500 32px ${SANS}`;drawLines(g,kl,80,by+f.lines.length*f.size*L.lh+18,32,42/32,'left')}
+    g.restore();
     g.save();g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=10;drawLogo(g,LOGO_W,80,H-99,41,'left');g.restore();
   }
 }
@@ -544,7 +571,7 @@ $('#to2').onclick=()=>go(2);
 function renderThemes(){$('#themes').innerHTML=THEMES.map(([k,n])=>`<button class="chip ${S.theme===k?'on':''}" data-t="${k}">${n}</button>`).join('')}
 function renderMsgs(){const L=LANG[S.lang];
   $('#msgs').innerHTML=MSG[S.lang][S.theme].map((m,i)=>`<button class="msg ${!S.useCustom&&S.msgIdx===i?'on':''}" data-i="${i}"><span class="fr" style="font-family:${L.font};font-weight:${L.w};font-size:${L.ui}px">${esc(m[0])}</span><span class="ko">${esc(m[1])}</span></button>`).join('');
-  $('#custom').placeholder=L.ph;$('#custom').style.fontFamily=L.font}
+  $('#custom').placeholder=L.ph;$('#custom').style.fontFamily=L.font;syncTb()}
 $('#themes').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;S.theme=b.dataset.t;S.msgIdx=0;S.useCustom=false;renderThemes();renderMsgs();draw()};
 $('#msgs').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;S.msgIdx=+b.dataset.i;S.useCustom=false;renderMsgs();draw()};
 $('#custom').oninput=e=>{S.customText=e.target.value;S.useCustom=!!e.target.value.trim();renderMsgs();draw()};
@@ -554,10 +581,18 @@ $('#colors').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;S.col
 $('#caption').oninput=e=>{S.caption=e.target.value;draw()};
 $('#showKo').onchange=e=>{S.showKo=e.target.checked;draw()};
 $('#zoom').oninput=e=>{S.zoom=e.target.value/100;draw()};
-$('#adjust').onchange=e=>{S.adjust=e.target.checked;$('#cv').classList.toggle('adjusting',S.adjust)};
+function syncTb(force){const t=$('#tbText');if(!t)return;if(force||document.activeElement!==t)t.value=getMsg().text}
+function setMode(m){S.adjust=(m==='photo');S.textMode=(m==='text');$('#adjust').checked=S.adjust;$('#textMode').checked=S.textMode;
+  $('#cv').classList.toggle('adjusting',S.adjust||S.textMode);$('#tbPanel').hidden=!S.textMode;if(S.textMode)syncTb(true)}
+$('#adjust').onchange=e=>setMode(e.target.checked?'photo':'');
+$('#textMode').onchange=e=>setMode(e.target.checked?'text':'');
+$('#tbText').oninput=e=>{const v=e.target.value;S.customText=v;S.useCustom=!!v.trim();$('#custom').value=v;renderMsgs();draw()};
+$('#tbSize').oninput=e=>{S.tsz=e.target.value/100;draw()};
+$('#tbBox').oninput=e=>{S.tw=e.target.value/100;draw()};
+$('#tbReset').onclick=()=>{S.tx=S.ty=0;S.tw=S.tsz=1;$('#tbSize').value=100;$('#tbBox').value=100;draw()};
 let drag=null;const cv=$('#cv');
-cv.addEventListener('pointerdown',e=>{if(!S.adjust)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId)});
-cv.addEventListener('pointermove',e=>{if(!drag)return;const k=W/cv.clientWidth;S.panX+=(e.clientX-drag.x)*k;S.panY+=(e.clientY-drag.y)*k;drag={x:e.clientX,y:e.clientY};draw()});
+cv.addEventListener('pointerdown',e=>{if(!S.adjust&&!S.textMode)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!drag)return;const k=W/cv.clientWidth;const dx=(e.clientX-drag.x)*k,dy=(e.clientY-drag.y)*k;if(S.textMode){S.tx=Math.max(-700,Math.min(700,S.tx+dx));S.ty=Math.max(-1100,Math.min(500,S.ty+dy))}else{S.panX+=dx;S.panY+=dy}drag={x:e.clientX,y:e.clientY};draw()});
 ['pointerup','pointercancel'].forEach(t=>cv.addEventListener(t,()=>{drag=null}));
 $('#back1').onclick=()=>history.back();
 
@@ -568,6 +603,7 @@ function dec(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';
 function buildLink(){const o={l:S.lang,th:S.theme,i:S.msgIdx,s:S.style,c:S.color,k:S.showKo?1:0,tp:S.imgKey==='mine'?'sea':S.imgKey};
   if(S.useCustom&&S.customText.trim()){o.u=1;o.ct=S.customText.trim();o.ck=S.customKo.trim()}
   if(S.caption.trim())o.cap=S.caption.trim();
+  if(S.tx||S.ty||S.tw!==1||S.tsz!==1){o.tx=Math.round(S.tx);o.ty=Math.round(S.ty);o.tw=S.tw;o.ts=S.tsz}
   return BASE+'?c='+enc(o)}
 async function ensureFonts(){const L=LANG[S.lang],m=getMsg();
   try{await Promise.race([Promise.all([document.fonts.load(`${L.w} 60px ${L.font}`,m.text),
@@ -620,8 +656,9 @@ document.fonts&&document.fonts.ready.then(()=>draw());
   try{const o=dec(p);
     if(LANG[o.l])S.lang=o.l;if(MSG.en[o.th])S.theme=o.th;S.msgIdx=Math.min(1,Math.max(0,+o.i||0));
     if(['note','polaroid','full'].includes(o.s))S.style=o.s;if(COLORS[o.c])S.color=o.c;S.showKo=o.k!==0;
-    if(o.u&&o.ct){S.useCustom=true;S.customText=String(o.ct).slice(0,70);S.customKo=String(o.ck||'').slice(0,60)}
+    if(o.u&&o.ct){S.useCustom=true;S.customText=String(o.ct).slice(0,120);S.customKo=String(o.ck||'').slice(0,60)}
     if(o.cap)S.caption=String(o.cap).slice(0,24);
+    if(o.tw){S.tx=+o.tx||0;S.ty=+o.ty||0;S.tw=Math.min(1.3,Math.max(.7,+o.tw||1));S.tsz=Math.min(1.4,Math.max(.6,+o.ts||1))}
     const tp=TPL[o.tp]?o.tp:'sea';S.img=getTpl(tp);S.imgKey=tp;
     shared=true;document.body.classList.add('shared');
     history.replaceState({p:3},'');makeCard(false);
